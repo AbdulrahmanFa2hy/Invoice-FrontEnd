@@ -1,35 +1,19 @@
 import { PDFViewer } from "@react-pdf/renderer";
 import InvoicePDF from "./InvoicePDF";
+import { useTranslation } from "react-i18next";
 
 function PDFPreview({
-  sender = {
-    name: "Your Company Name",
-    phone: "Your Phone",
-    email: "your@email.com",
-    address: "Your Address",
-    logo: null,
-  },
-  customer = {
-    name: "Customer Name",
-    phone: "Customer Phone",
-    email: "customer@email.com",
-    address: "Customer Address",
-  },
-  items = [
-    {
-      id: "sample",
-      name: "Sample Item",
-      description: "Sample Description",
-      quantity: 1,
-      price: 0,
-    },
-  ],
-  invoiceNumber = "PREVIEW",
-  tax = 0,
-  discount = 0,
-  privacy = "",
-  notes = "",
+  sender,
+  customer,
+  items,
+  invoiceNumber,
+  tax,
+  discount,
+  privacy,
+  notes,
 }) {
+  const { i18n } = useTranslation();
+
   return (
     <PDFViewer style={{ width: "100%", height: "100%" }}>
       <InvoicePDF
@@ -42,6 +26,7 @@ function PDFPreview({
         businessInfo={{ businessName: "INVOICE" }}
         privacy={privacy}
         notes={notes}
+        lang={i18n.language}
       />
     </PDFViewer>
   );

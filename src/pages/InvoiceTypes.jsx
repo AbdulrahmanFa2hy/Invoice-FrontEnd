@@ -1,47 +1,32 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setInvoiceType } from "../store/mainSlice";
+import { useTranslation } from "react-i18next";
 
 function InvoiceTypes() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const companyData = useSelector((state) => state.company);
+
   const invoiceTypes = [
     {
-      name: "Commercial Invoice",
-      description:
-        "Most common type for business transactions. Used for selling goods and services between businesses.",
+      name: t("invoiceTypes.commercial.name"),
+      description: t("invoiceTypes.commercial.description"),
       type: "commercial",
-      features: [
-        "Payment tracking",
-        "Tax calculations",
-        "Business details",
-        "Item breakdown",
-      ],
+      features: t("invoiceTypes.commercial.features", { returnObjects: true }),
     },
     {
-      name: "Proforma Invoice",
-      description:
-        "Preliminary bill of sale sent to buyers before the delivery of goods.",
+      name: t("invoiceTypes.proforma.name"),
+      description: t("invoiceTypes.proforma.description"),
       type: "proforma",
-      features: [
-        "Shipping details",
-        "Estimated costs",
-        "Product details",
-        "Terms & conditions",
-      ],
+      features: t("invoiceTypes.proforma.features", { returnObjects: true }),
     },
     {
-      name: "Tax Invoice",
-      description:
-        "Specialized invoice that includes tax calculations and GST/VAT details.",
+      name: t("invoiceTypes.tax.name"),
+      description: t("invoiceTypes.tax.description"),
       type: "tax",
-      features: [
-        "Tax breakdown",
-        "GST/VAT details",
-        "Legal compliance",
-        "Input credits",
-      ],
+      features: t("invoiceTypes.tax.features", { returnObjects: true }),
     },
   ];
 
@@ -64,10 +49,10 @@ function InvoiceTypes() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8 sm:mb-12 md:mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-primary-600 via-purple-500 to-pink-500 bg-clip-text text-transparent pb-2 inline-block">
-            Select Invoice Type
+            {t("invoiceTypes.title")}
           </h2>
           <p className="mt-3 sm:mt-4 text-base sm:text-lg md:text-xl text-gray-600">
-            Choose the invoice type that matches your business needs
+            {t("invoiceTypes.subtitle")}
           </p>
         </div>
 

@@ -16,6 +16,7 @@ import InvoiceTypes from "./pages/InvoiceTypes"; // Renamed from SubscriptionPla
 import Customers from "./pages/Customers";
 import Profile from "./pages/Profile";
 import CompanyForm from "./pages/CompanyForm";
+import DirectionalLayout from "./components/DirectionalLayout";
 
 function App() {
   const dispatch = useDispatch();
@@ -33,79 +34,81 @@ function App() {
   };
 
   return (
-    <Router>
-      {isAuthenticated && <Navbar />}
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <AuthRoute>
-              <Home />
-            </AuthRoute>
-          }
-        />
-        <Route
-          path="/invoices"
-          element={
-            <AuthRoute>
-              <Invoices />
-            </AuthRoute>
-          }
-        />
-        <Route
-          path="/customers"
-          element={
-            <AuthRoute>
-              <Customers />
-            </AuthRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <AuthRoute>
-              <Profile />
-            </AuthRoute>
-          }
-        />
-        <Route
-          path="/invoice-types"
-          element={
-            <AuthRoute>
-              <InvoiceTypes />
-            </AuthRoute>
-          }
-        />
-        <Route
-          path="/company"
-          element={
-            <AuthRoute>
-              <CompanyForm />
-            </AuthRoute>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            !isAuthenticated ? (
-              <Login onLogin={handleAuth} />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            !isAuthenticated ? (
-              <Signup onSignup={handleAuth} />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-      </Routes>
-    </Router>
+    <DirectionalLayout>
+      <Router>
+        {isAuthenticated && <Navbar />}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <AuthRoute>
+                <Home />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/invoices"
+            element={
+              <AuthRoute>
+                <Invoices />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/customers"
+            element={
+              <AuthRoute>
+                <Customers />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <AuthRoute>
+                <Profile />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/invoice-types"
+            element={
+              <AuthRoute>
+                <InvoiceTypes />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/company"
+            element={
+              <AuthRoute>
+                <CompanyForm />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              !isAuthenticated ? (
+                <Login onLogin={handleAuth} />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              !isAuthenticated ? (
+                <Signup onSignup={handleAuth} />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+        </Routes>
+      </Router>
+    </DirectionalLayout>
   );
 }
 

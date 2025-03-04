@@ -6,6 +6,7 @@ import {
   deleteCustomer,
 } from "../store/customersSlice";
 import { normalizeArabicText } from "../utils/arabicNormalization";
+import { useTranslation } from "react-i18next"; // Add this import
 
 const CustomerModal = ({ customer, onClose, onEdit, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -148,6 +149,7 @@ const CustomerModal = ({ customer, onClose, onEdit, onDelete }) => {
 };
 
 const Customers = () => {
+  const { t } = useTranslation(); // Add this hook
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
@@ -174,7 +176,7 @@ const Customers = () => {
   return (
     <div className="p-4 sm:p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen text-sm sm:text-base">
       <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-4 sm:mb-8 text-gray-700 tracking-tight">
-        Customers
+        {t("customersPage.title")}
       </h2>
 
       {/* Search box */}
@@ -182,7 +184,7 @@ const Customers = () => {
         <div className="relative">
           <input
             type="text"
-            placeholder="Search customers..."
+            placeholder={t("customersPage.searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full px-4 py-2.5 sm:py-3 pl-11 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all duration-200 text-sm sm:text-base"
@@ -210,16 +212,16 @@ const Customers = () => {
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
                 <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-600">
-                  Name
+                  {t("name")}
                 </th>
                 <th className="hidden sm:table-cell px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-600">
-                  Email
+                  {t("email")}
                 </th>
                 <th className="hidden sm:table-cell px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-600">
-                  Phone
+                  {t("phone")}
                 </th>
                 <th className="hidden sm:table-cell px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-600">
-                  Address
+                  {t("address")}
                 </th>
               </tr>
             </thead>
@@ -260,7 +262,7 @@ const Customers = () => {
                     colSpan="4"
                     className="px-4 sm:px-6 py-6 sm:py-8 text-center text-sm sm:text-base text-gray-500 bg-gray-50"
                   >
-                    No customers found
+                    {t("customersPage.noCustomersFound")}
                   </td>
                 </tr>
               )}

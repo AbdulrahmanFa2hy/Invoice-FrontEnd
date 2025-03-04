@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { updateCompany } from "../store/companySlice";
 import { motion } from "framer-motion";
 import { FaTrash } from "react-icons/fa";
+import { useTranslation } from "react-i18next"; // Add this import
 
 function CompanyForm() {
+  const { t } = useTranslation(); // Add this hook
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [previewLogo, setPreviewLogo] = useState(null);
@@ -113,10 +115,10 @@ function CompanyForm() {
             {/* Title section */}
             <div className="md:col-span-2 text-center">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
-                Company Information
+                {t("companyPage.title")}
               </h2>
               <p className="text-sm sm:text-base text-gray-500">
-                Let's set up your company profile
+                {t("companyPage.subtitle")}
               </p>
             </div>
           </div>
@@ -238,7 +240,7 @@ function CompanyForm() {
                     transform transition-all duration-300 shadow-md 
                     hover:shadow-lg"
           >
-            Save and Continue
+            {t("companyPage.saveButton")}
           </motion.button>
         </motion.form>
       </motion.div>

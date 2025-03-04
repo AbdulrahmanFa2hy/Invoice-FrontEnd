@@ -20,6 +20,8 @@ import {
   updateItem,
   saveToHistory,
   generateInvoiceNumber,
+  updatePrivacy,
+  updateNotes,
 } from "../store/mainSlice";
 import {
   addCustomer,
@@ -32,7 +34,9 @@ import { useTranslation } from "react-i18next";
 
 function Home() {
   const dispatch = useDispatch();
-  const { items, invoiceHistory } = useSelector((state) => state.main.invoice);
+  const { items, invoiceHistory, privacy, notes } = useSelector(
+    (state) => state.main.invoice
+  );
   const company = useSelector((state) => state.company);
   const invoiceNumber = useInvoiceNumber();
   const { customers, selectedCustomerId } = useSelector(
@@ -52,10 +56,9 @@ function Home() {
 
   const [tax, setTax] = useState(0);
   const [discount, setDiscount] = useState(0);
-  const [privacy, setPrivacy] = useState("");
-  const [notes, setNotes] = useState("");
   const [isLogoModalOpen, setIsLogoModalOpen] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [tempCustomer, setTempCustomer] = useState(null);
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -68,12 +71,6 @@ function Home() {
     }
   }, [dispatch, invoiceNumber, items.length]);
 
-  useEffect(() => {
-    // Add this effect to handle RTL/LTR
-    document.documentElement.dir = i18n.language === "ar" ? "rtl" : "ltr";
-    document.documentElement.lang = i18n.language;
-  }, [i18n.language]);
-
   const handleUpdateItem = (id, field, value) => {
     dispatch(updateItem({ id, field, value }));
   };
@@ -81,6 +78,13 @@ function Home() {
   const handleTextareaResize = (e) => {
     e.target.style.height = "auto";
     e.target.style.height = e.target.scrollHeight + "px";
+  };
+
+  // Add this function for handling textarea height adjustment
+  const handleTextareaInput = (e) => {
+    const textarea = e.target;
+    textarea.style.height = "auto";
+    textarea.style.height = `${textarea.scrollHeight}px`;
   };
 
   // Update the calculations
@@ -136,47 +140,38 @@ function Home() {
   });
 
   const handleCustomerChange = (field, value) => {
-    if (!selectedCustomerId) {
-      // Create new customer when typing for the first time
-      const newCustomer = {
-        id: Date.now().toString(),
-        name: field === "name" ? value : "",
-        phone: field === "phone" ? value : "",
-        email: field === "email" ? value : "",
-        address: field === "address" ? value : "",
-      };
-      dispatch(addCustomer(newCustomer));
-      dispatch(setSelectedCustomerId(newCustomer.id));
-    } else {
-      // Update existing customer
-      dispatch(
-        updateCustomer({
-          id: selectedCustomerId,
-          ...selectedCustomer,
-          [field]: value,
-        })
-      );
-    }
+    const currentCustomer = tempCustomer || { ...selectedCustomer };
+    const updatedCustomer = {
+      ...currentCustomer,
+      id: currentCustomer.id || Date.now().toString(),
+      [field]: value,
+    };
+    setTempCustomer(updatedCustomer);
   };
 
   const handleCustomerSelect = (customerId) => {
     if (customerId === "") {
       dispatch(setSelectedCustomerId(null));
-      // Clear all customer fields when selecting empty option
-      const emptyCustomer = {
-        id: "",
-        name: "",
-        phone: "",
-        email: "",
-        address: "",
-      };
-      dispatch(addCustomer(emptyCustomer));
+      setTempCustomer(null);
     } else {
+      const selectedCustomer = customers.find((c) => c.id === customerId);
       dispatch(setSelectedCustomerId(customerId));
+      setTempCustomer(null);
     }
   };
 
   const saveInvoiceData = () => {
+    // Save customer data if there are temporary changes
+    if (tempCustomer) {
+      if (!selectedCustomerId) {
+        dispatch(addCustomer(tempCustomer));
+        dispatch(setSelectedCustomerId(tempCustomer.id));
+      } else {
+        dispatch(updateCustomer(tempCustomer));
+      }
+      setTempCustomer(null);
+    }
+
     const invoiceData = prepareInvoiceData();
     dispatch(saveToHistory(invoiceData));
     Swal.fire({
@@ -235,6 +230,24 @@ function Home() {
       return `${baseClass} text-start rtl:text-right ltr:text-left [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`;
     }
     return `${baseClass} text-start`;
+  };
+
+  // Add this helper function for textarea styles
+  const getTextAreaStyle = (isRTL) => ({
+    fontFamily: "Cairo, sans-serif",
+    direction: isRTL ? "rtl" : "ltr",
+    textAlign: isRTL ? "right" : "left",
+    padding: isRTL ? "8px 8px 8px 32px" : "8px 32px 8px 8px", // Adjust padding for RTL/LTR
+  });
+
+  const handlePrivacyChange = (e) => {
+    dispatch(updatePrivacy(e.target.value));
+    handleTextareaInput(e);
+  };
+
+  const handleNotesChange = (e) => {
+    dispatch(updateNotes(e.target.value));
+    handleTextareaInput(e);
   };
 
   return (
@@ -375,7 +388,7 @@ function Home() {
                     type="text"
                     placeholder={t("name")}
                     className={getInputClassName("input")}
-                    value={selectedCustomer.name}
+                    value={(tempCustomer || selectedCustomer).name}
                     onChange={(e) =>
                       handleCustomerChange("name", e.target.value)
                     }
@@ -385,7 +398,7 @@ function Home() {
                     dir="auto"
                     placeholder={t("phone")}
                     className={getInputClassName("input", "tel")}
-                    value={selectedCustomer.phone}
+                    value={(tempCustomer || selectedCustomer).phone}
                     onChange={(e) =>
                       handleCustomerChange("phone", e.target.value)
                     }
@@ -394,7 +407,7 @@ function Home() {
                     type="email"
                     placeholder={t("email")}
                     className={getInputClassName("input")}
-                    value={selectedCustomer.email}
+                    value={(tempCustomer || selectedCustomer).email}
                     onChange={(e) =>
                       handleCustomerChange("email", e.target.value)
                     }
@@ -402,7 +415,7 @@ function Home() {
                   <textarea
                     placeholder={t("address")}
                     className={getInputClassName("input h-24")}
-                    value={selectedCustomer.address}
+                    value={(tempCustomer || selectedCustomer).address}
                     onChange={(e) =>
                       handleCustomerChange("address", e.target.value)
                     }
@@ -700,19 +713,32 @@ function Home() {
                 <div className="space-y-3 mt-4 md:border-t pt-4">
                   <textarea
                     className={getInputClassName(
-                      "input w-full text-sm min-h-[60px] resize-none bg-gray-50"
+                      "input h-full resize-none overflow-hidden bg-gray-50"
                     )}
+                    style={{
+                      ...getTextAreaStyle(i18n.language === "ar"),
+                      minHeight: "60px",
+                    }}
+                    dir={i18n.language === "ar" ? "rtl" : "ltr"}
                     placeholder={t("addPrivacyTerms")}
                     value={privacy}
-                    onChange={(e) => setPrivacy(e.target.value)}
+                    onChange={handlePrivacyChange}
+                    onInput={handleTextareaInput}
                   ></textarea>
+
                   <textarea
                     className={getInputClassName(
-                      "input w-full text-sm min-h-[60px] resize-none bg-gray-50"
+                      "input h-full resize-none overflow-hidden bg-gray-50"
                     )}
+                    style={{
+                      ...getTextAreaStyle(i18n.language === "ar"),
+                      minHeight: "60px",
+                    }}
+                    dir={i18n.language === "ar" ? "rtl" : "ltr"}
                     placeholder={t("addNotes")}
                     value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
+                    onChange={handleNotesChange}
+                    onInput={handleTextareaInput}
                   ></textarea>
                 </div>
               </div>

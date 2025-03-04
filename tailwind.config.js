@@ -1,8 +1,13 @@
+const tailwindcssRtl = require("tailwindcss-rtl");
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        cairo: ["Cairo", "sans-serif"],
+      },
       colors: {
         primary: {
           50: "#f0f9ff",
@@ -27,5 +32,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [tailwindcssRtl], // ✅ Use it directly, no function call needed
 };
