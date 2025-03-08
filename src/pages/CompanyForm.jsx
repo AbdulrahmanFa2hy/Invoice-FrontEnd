@@ -90,7 +90,7 @@ function CompanyForm() {
                                shadow-md z-50 bg-white hover:text-red-500 
                                transition-all duration-200
                                opacity-0 group-hover:opacity-100 text-sm"
-                        title={t('deleteItem')}
+                        title={t("deleteItem")}
                       >
                         <FaTrash />
                       </button>
@@ -98,7 +98,7 @@ function CompanyForm() {
                   ) : (
                     <div className="text-center p-4">
                       <i className="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
-                      <p className="text-xs text-gray-500">{t('uploadLogo')}</p>
+                      <p className="text-xs text-gray-500">{t("uploadLogo")}</p>
                     </div>
                   )}
                 </div>
@@ -115,10 +115,10 @@ function CompanyForm() {
             {/* Title section */}
             <div className="md:col-span-2 text-center">
               <h2 className="py-2 text-2xl sm:text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
-                {t('companyInformation')}
+                {t("companyInformation")}
               </h2>
               <p className="text-sm sm:text-base text-gray-500">
-                {t('setupCompanyProfile')}
+                {t("setupCompanyProfile")}
               </p>
             </div>
           </div>
@@ -129,19 +129,19 @@ function CompanyForm() {
               {[
                 {
                   field: "name",
-                  placeholder: t('companyName'),
+                  placeholder: t("companyName"),
                   icon: "far fa-building",
                   colSpan: "sm:col-span-2",
                 },
                 {
                   field: "email",
-                  placeholder: t('companyEmail'),
+                  placeholder: t("companyEmail"),
                   icon: "far fa-envelope",
                   colSpan: "",
                 },
                 {
                   field: "phone",
-                  placeholder: t('contactNumber'),
+                  placeholder: t("contactNumber"),
                   icon: "far fa-phone",
                   colSpan: "",
                   type: "tel",
@@ -150,13 +150,22 @@ function CompanyForm() {
                 },
                 {
                   field: "address",
-                  placeholder: t('companyAddress'),
+                  placeholder: t("companyAddress"),
                   icon: "far fa-map-marker-alt",
                   colSpan: "sm:col-span-2",
                   isTextarea: true,
                 },
               ].map(
-                ({ field, placeholder, icon, colSpan, isTextarea, type, dir, className }) => (
+                ({
+                  field,
+                  placeholder,
+                  icon,
+                  colSpan,
+                  isTextarea,
+                  type,
+                  dir,
+                  className,
+                }) => (
                   <motion.div
                     key={field}
                     initial={{ opacity: 0, y: 10 }}
@@ -221,7 +230,9 @@ function CompanyForm() {
                           hover:border-gray-200 hover:bg-gray-50/80
                           focus:outline-none focus:border-primary-500 focus:bg-white
                           [&::-webkit-inner-spin-button]:appearance-none
-                          [&::-webkit-outer-spin-button]:appearance-none ${className || ''}`}
+                          [&::-webkit-outer-spin-button]:appearance-none ${
+                            className || ""
+                          }`}
                       />
                     )}
                   </motion.div>
@@ -242,7 +253,7 @@ function CompanyForm() {
                     transform transition-all duration-300 shadow-md 
                     hover:shadow-lg"
           >
-            {t('saveAndContinue')}
+            {t("saveAndContinue")}
           </motion.button>
         </motion.form>
       </motion.div>

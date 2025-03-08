@@ -42,14 +42,15 @@ const Profile = () => {
     setIsEditing(false);
   };
 
-  if (loading) return <div className="container mx-auto mt-8">{t('loading')}</div>;
+  if (loading)
+    return <div className="container mx-auto mt-8">{t("loading")}</div>;
   if (error)
     return <div className="container mx-auto mt-8 text-red-500">{error}</div>;
 
   return (
     <div className="container mx-auto mt-8 p-4">
       <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold mb-6">{t('profile')}</h1>
+        <h1 className="text-2xl font-bold mb-6">{t("profile")}</h1>
         {isEditing ? (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex flex-col items-center mb-4">
@@ -78,7 +79,9 @@ const Profile = () => {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-bold mb-2">{t('name')}</label>
+              <label className="block text-gray-700 font-bold mb-2">
+                {t("name")}
+              </label>
               <input
                 type="text"
                 name="name"
@@ -89,7 +92,7 @@ const Profile = () => {
             </div>
             <div>
               <label className="block text-gray-700 font-bold mb-2">
-                {t('email')}
+                {t("email")}
               </label>
               <input
                 type="email"
@@ -104,14 +107,14 @@ const Profile = () => {
                 type="submit"
                 className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
               >
-                {t('save')}
+                {t("save")}
               </button>
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
                 className="flex-1 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors"
               >
-                {t('cancel')}
+                {t("cancel")}
               </button>
             </div>
           </form>
@@ -137,12 +140,14 @@ const Profile = () => {
               )}
             </div>
             <div>
-              <label className="block text-gray-700 font-bold mb-2">{t('name')}</label>
+              <label className="block text-gray-700 font-bold mb-2">
+                {t("name")}
+              </label>
               <p className="text-gray-600">{userData.name}</p>
             </div>
             <div>
               <label className="block text-gray-700 font-bold mb-2">
-                {t('email')}
+                {t("email")}
               </label>
               <p className="text-gray-600">{userData.email}</p>
             </div>
@@ -150,13 +155,13 @@ const Profile = () => {
               onClick={() => setIsEditing(true)}
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
             >
-              {t('editProfile')}
+              {t("editProfile")}
             </button>
             <button
               onClick={handleLogout}
               className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors"
             >
-              {t('logout')}
+              {t("logout")}
             </button>
           </div>
         )}

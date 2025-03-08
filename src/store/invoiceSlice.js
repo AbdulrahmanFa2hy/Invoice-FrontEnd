@@ -20,6 +20,11 @@ const initialState = {
     discount: 0,
     privacy: "",
     notes: "",
+    // New fields for partial payments
+    totalAmount: 0,
+    paidAmount: 0,
+    remainingAmount: 0,
+    paymentHistory: [],
   },
   // userid: null,
 };
@@ -154,6 +159,27 @@ const invoiceSlice = createSlice({
     updateNotes: (state, action) => {
       state.invoice.notes = action.payload;
     },
+    addPayment: (state, action) => {
+      const { amount, date = new Date().toISOString() } = action.payload;
+      state.invoice.paidAmount += amount;
+      state.invoice.remainingAmount =
+        state.invoice.totalAmount - state.invoice.paidAmount;
+      state.invoice.paymentHistory.push({
+        id: Date.now(),
+        amount,
+        date,
+        remainingAmount: state.invoice.remainingAmount,
+      });
+    },
+    updateTotalAmount: (state, action) => {
+      state.invoice.totalAmount = action.payload;
+      state.invoice.remainingAmount = action.payload - state.invoice.paidAmount;
+    },
+    resetPayment: (state) => {
+      state.invoice.paidAmount = 0;
+      state.invoice.remainingAmount = state.invoice.totalAmount;
+      state.invoice.paymentHistory = [];
+    },
   },
 });
 
@@ -172,6 +198,9 @@ export const {
   updateDiscount,
   updatePrivacy,
   updateNotes,
+  addPayment,
+  updateTotalAmount,
+  resetPayment,
 } = invoiceSlice.actions;
 
 export default invoiceSlice.reducer;

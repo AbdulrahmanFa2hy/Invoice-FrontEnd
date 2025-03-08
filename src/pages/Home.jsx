@@ -572,16 +572,16 @@ function Home() {
                 <div className="col-span-4 text-sm sm:text-base">
                   {t("desc")}
                 </div>
-                <div className="col-span-1 text-sm sm:text-base text-center">
+                <div className="col-span-1 text-sm sm:text-base text-end px-1">
                   {t("qty")}
                 </div>
-                <div className="col-span-1 text-sm sm:text-base text-center">
+                <div className="col-span-1 text-sm sm:text-base text-end px-1">
                   {t("price")}
                 </div>
-                <div className="col-span-1 text-sm sm:text-base text-center">
+                <div className="col-span-1 text-sm sm:text-base text-end">
                   {t("total")}
                 </div>
-                <div className="col-span-1">{t("actions")}</div>
+                <div className="col-span-1 text-end px-1">{t("actions")}</div>
               </div>
             </div>
 
