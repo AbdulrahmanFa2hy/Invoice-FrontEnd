@@ -16,7 +16,18 @@ const base64ToFile = async (base64String, filename = "logo.png") => {
 // Helper function to construct logo URL
 const getLogoUrl = (logoPath) => {
   if (!logoPath) return "";
-  if (logoPath.startsWith("http")) return logoPath;
+  if (logoPath.startsWith("http")) {
+    // If it's already a full URL, check if it's localhost and convert it
+    if (
+      logoPath.includes("localhost:3000") ||
+      logoPath.includes("127.0.0.1:3000")
+    ) {
+      // Extract just the filename and rebuild with proper URL
+      const fileName = logoPath.split("/").pop();
+      return `${UPLOADS_BASE_URL}/${fileName}`;
+    }
+    return logoPath;
+  }
   return `${UPLOADS_BASE_URL}/${logoPath}`;
 };
 
@@ -75,9 +86,21 @@ export const saveCompany = createAsyncThunk(
   async (companyData, { getState, rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        return rejectWithValue("Authentication token is required");
+      }
+
       const formData = await formatCompanyData(companyData);
       const state = getState();
       const isNewCompany = !state.company.exists;
+
+      console.log("Saving company data:", {
+        isNewCompany,
+        hasLogo: !!companyData.logo,
+        deleteLogo: !!companyData.deleteLogo,
+        apiUrl: `${API_BASE_URL}/companies`,
+      });
+
       let response;
 
       if (isNewCompany) {
@@ -86,6 +109,7 @@ export const saveCompany = createAsyncThunk(
             "Content-Type": "multipart/form-data",
             token: token,
           },
+          timeout: 30000, // 30 second timeout
         });
       } else {
         response = await axios.put(`${API_BASE_URL}/companies`, formData, {
@@ -93,16 +117,46 @@ export const saveCompany = createAsyncThunk(
             "Content-Type": "multipart/form-data",
             token: token,
           },
+          timeout: 30000, // 30 second timeout
         });
       }
+
+      console.log("Company save successful:", response.data);
       return response.data;
     } catch (error) {
       console.error("Company save error:", error);
+
+      // Handle network errors
+      if (
+        error.code === "NETWORK_ERROR" ||
+        error.message === "Failed to fetch"
+      ) {
+        return rejectWithValue(
+          "Network error. Please check your internet connection and try again."
+        );
+      }
+
+      // Handle timeout errors
+      if (error.code === "ECONNABORTED") {
+        return rejectWithValue("Request timeout. Please try again.");
+      }
 
       // Specifically handle 409 Conflict error
       if (error.response?.status === 409) {
         return rejectWithValue(
           "A company with this information already exists"
+        );
+      }
+
+      // Handle authentication errors
+      if (error.response?.status === 401) {
+        return rejectWithValue("Authentication failed. Please login again.");
+      }
+
+      // Handle CORS errors
+      if (error.response?.status === 0) {
+        return rejectWithValue(
+          "Unable to connect to server. Please check if the backend is running."
         );
       }
 
@@ -134,6 +188,15 @@ const companySlice = createSlice({
     },
     resetCompany: () => {
       return initialState;
+    },
+    clearCachedLogo: (state) => {
+      // Clear any localhost URLs from cached data
+      if (
+        state.logo &&
+        (state.logo.includes("localhost") || state.logo.includes("127.0.0.1"))
+      ) {
+        state.logo = "";
+      }
     },
   },
   extraReducers: (builder) => {
@@ -181,5 +244,6 @@ const companySlice = createSlice({
   },
 });
 
-export const { updateCompany, resetCompany } = companySlice.actions;
+export const { updateCompany, resetCompany, clearCachedLogo } =
+  companySlice.actions;
 export default companySlice.reducer;

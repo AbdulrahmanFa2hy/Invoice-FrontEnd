@@ -271,11 +271,20 @@ const Customers = () => {
     }
   }, [error, t]);
 
-  const filteredCustomers = (customers || []).filter((customer) =>
-    normalizeArabicText(Object.values(customer).join(" ")).includes(
-      normalizeArabicText(searchQuery)
-    )
-  );
+  const filteredCustomers = (customers || []).filter((customer) => {
+    if (!customer || typeof customer !== "object") {
+      return false;
+    }
+
+    try {
+      return normalizeArabicText(Object.values(customer).join(" ")).includes(
+        normalizeArabicText(searchQuery)
+      );
+    } catch (error) {
+      console.error("Error filtering customer:", error, customer);
+      return false;
+    }
+  });
 
   const handleDelete = async (id) => {
     if (!id) {
@@ -340,19 +349,22 @@ const Customers = () => {
     } catch (error) {
       // Check for specific error types
       let errorMessage = error?.message || t("errorUpdatingCustomer");
-      
+
       // Handle unique constraint errors
-      if (error?.message?.includes("duplicate") || error?.message?.includes("unique")) {
+      if (
+        error?.message?.includes("duplicate") ||
+        error?.message?.includes("unique")
+      ) {
         // Check if it's an email error
         if (error?.message?.toLowerCase().includes("email")) {
           errorMessage = t("emailAlreadyExists");
-        } 
+        }
         // Check if it's a phone error
         else if (error?.message?.toLowerCase().includes("phone")) {
           errorMessage = t("phoneAlreadyExists");
         }
       }
-      
+
       Swal.fire({
         icon: "error",
         text: errorMessage,
@@ -366,25 +378,62 @@ const Customers = () => {
 
   const handleAddCustomer = async () => {
     // First, let's create a function to show the modal with pre-filled values and error messages
-    const showAddCustomerModal = async (initialValues = {}, fieldErrors = {}) => {
+    const showAddCustomerModal = async (
+      initialValues = {},
+      fieldErrors = {}
+    ) => {
       // Create HTML for the form with pre-filled values
       const formHtml = `
         <div class="space-y-4 mt-4">
           <div class="relative">
-            <input id="name" class="w-full px-4 py-2.5 rounded-lg border ${fieldErrors.name ? 'border-red-500' : 'border-gray-200'} bg-gray-50 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="${t("name")}" value="${initialValues.name || ''}">
-            ${fieldErrors.name ? `<p class="text-red-500 text-xs mt-1">${fieldErrors.name}</p>` : ''}
+            <input id="name" class="w-full px-4 py-2.5 rounded-lg border ${
+              fieldErrors.name ? "border-red-500" : "border-gray-200"
+            } bg-gray-50 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="${t(
+        "name"
+      )}" value="${initialValues.name || ""}">
+            ${
+              fieldErrors.name
+                ? `<p class="text-red-500 text-xs mt-1">${fieldErrors.name}</p>`
+                : ""
+            }
           </div>
           <div class="relative">
-            <input id="email" class="w-full px-4 py-2.5 rounded-lg border ${fieldErrors.email ? 'border-red-500' : 'border-gray-200'} bg-gray-50 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="${t("email")}" value="${initialValues.email || ''}">
-            ${fieldErrors.email ? `<p class="text-red-500 text-xs mt-1">${fieldErrors.email}</p>` : ''}
+            <input id="email" class="w-full px-4 py-2.5 rounded-lg border ${
+              fieldErrors.email ? "border-red-500" : "border-gray-200"
+            } bg-gray-50 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="${t(
+        "email"
+      )}" value="${initialValues.email || ""}">
+            ${
+              fieldErrors.email
+                ? `<p class="text-red-500 text-xs mt-1">${fieldErrors.email}</p>`
+                : ""
+            }
           </div>
           <div class="relative">
-            <input id="phone" class="w-full px-4 py-2.5 rounded-lg border ${fieldErrors.phone ? 'border-red-500' : 'border-gray-200'} bg-gray-50 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="${t("phone")}" type="tel" inputmode="numeric" pattern="[0-9+]*" value="${initialValues.phone || ''}">
-            ${fieldErrors.phone ? `<p class="text-red-500 text-xs mt-1">${fieldErrors.phone}</p>` : ''}
+            <input id="phone" class="w-full px-4 py-2.5 rounded-lg border ${
+              fieldErrors.phone ? "border-red-500" : "border-gray-200"
+            } bg-gray-50 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="${t(
+        "phone"
+      )}" type="tel" inputmode="numeric" pattern="[0-9+]*" value="${
+        initialValues.phone || ""
+      }">
+            ${
+              fieldErrors.phone
+                ? `<p class="text-red-500 text-xs mt-1">${fieldErrors.phone}</p>`
+                : ""
+            }
           </div>
           <div class="relative">
-            <input id="address" class="w-full px-4 py-2.5 rounded-lg border ${fieldErrors.address ? 'border-red-500' : 'border-gray-200'} bg-gray-50 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="${t("address")}" value="${initialValues.address || ''}">
-            ${fieldErrors.address ? `<p class="text-red-500 text-xs mt-1">${fieldErrors.address}</p>` : ''}
+            <input id="address" class="w-full px-4 py-2.5 rounded-lg border ${
+              fieldErrors.address ? "border-red-500" : "border-gray-200"
+            } bg-gray-50 focus:bg-white focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="${t(
+        "address"
+      )}" value="${initialValues.address || ""}">
+            ${
+              fieldErrors.address
+                ? `<p class="text-red-500 text-xs mt-1">${fieldErrors.address}</p>`
+                : ""
+            }
           </div>
         </div>
       `;
@@ -396,8 +445,8 @@ const Customers = () => {
         confirmButtonText: t("add"),
         cancelButtonText: t("cancel"),
         buttonsStyling: true,
-        confirmButtonColor: '#4f46e5',
-        cancelButtonColor: '#f3f4f6',
+        confirmButtonColor: "#4f46e5",
+        cancelButtonColor: "#f3f4f6",
         preConfirm: () => {
           const name = document.getElementById("name").value;
           const email = document.getElementById("email").value;
@@ -423,16 +472,16 @@ const Customers = () => {
         },
         didOpen: () => {
           // Add event listener to phone input
-          const phoneInput = document.getElementById('phone');
-          phoneInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9+]/g, '');
+          const phoneInput = document.getElementById("phone");
+          phoneInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[^0-9+]/g, "");
           });
-          
+
           const cancelButton = Swal.getCancelButton();
           if (cancelButton) {
-            cancelButton.style.color = '#374151';
+            cancelButton.style.color = "#374151";
           }
-        }
+        },
       });
 
       return formValues;
@@ -446,21 +495,21 @@ const Customers = () => {
       try {
         // Check for duplicates locally
         const existingCustomer = customers.find(
-          c => c.email === formValues.email || c.phone === formValues.phone
+          (c) => c.email === formValues.email || c.phone === formValues.phone
         );
-        
+
         if (existingCustomer) {
           // Create field-specific errors
           const fieldErrors = {};
-          
+
           if (existingCustomer.email === formValues.email) {
             fieldErrors.email = t("emailAlreadyExists");
           }
-          
+
           if (existingCustomer.phone === formValues.phone) {
             fieldErrors.phone = t("phoneAlreadyExists");
           }
-          
+
           // Show toast notification
           Swal.fire({
             icon: "error",
@@ -470,20 +519,20 @@ const Customers = () => {
             showConfirmButton: false,
             timer: 3000,
           });
-          
+
           // Reopen the modal with the same values and error messages
           formValues = await showAddCustomerModal(formValues, fieldErrors);
-          
+
           // If user cancelled after seeing errors, exit the function
           if (!formValues) return;
-          
+
           // Otherwise, continue with the new values
         }
-        
+
         // If we get here, either there were no duplicates or the user has edited the fields
         // Proceed with API call
         await dispatch(addCustomer(formValues)).unwrap();
-        
+
         // Refresh the customers list after adding
         dispatch(fetchCustomers());
 
@@ -499,11 +548,14 @@ const Customers = () => {
         // Handle API errors
         let errorMessage = error?.message || t("errorAddingCustomer");
         const fieldErrors = {};
-        
+
         // Determine which field has the error
         if (error?.code === "DUPLICATE_CUSTOMER") {
           errorMessage = t("customerAlreadyExists");
-        } else if (error?.message?.includes("duplicate") || error?.message?.includes("unique")) {
+        } else if (
+          error?.message?.includes("duplicate") ||
+          error?.message?.includes("unique")
+        ) {
           if (error?.message?.toLowerCase().includes("email")) {
             errorMessage = t("emailAlreadyExists");
             fieldErrors.email = t("emailAlreadyExists");
@@ -512,7 +564,7 @@ const Customers = () => {
             fieldErrors.phone = t("phoneAlreadyExists");
           }
         }
-        
+
         // Show toast notification
         Swal.fire({
           icon: "error",
@@ -522,21 +574,19 @@ const Customers = () => {
           showConfirmButton: false,
           timer: 3000,
         });
-        
+
         // Reopen the modal with the same values and error messages
         formValues = await showAddCustomerModal(formValues, fieldErrors);
-        
+
         // If user cancelled after seeing errors, exit the function
         if (!formValues) return;
-        
+
         // If user provided new values, try again recursively
         // This creates a loop where the user can keep trying until they succeed or cancel
         handleAddCustomer();
       }
     }
   };
-
-
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -582,7 +632,6 @@ const Customers = () => {
           </svg>
         </div>
       </div>
-
 
       {/* Error state */}
       {status === "failed" && (
@@ -631,22 +680,22 @@ const Customers = () => {
               <tbody className="divide-y divide-gray-100">
                 {filteredCustomers.length === 0 ? (
                   <tr key="no-customers" className="h-32">
-                    <td 
-                      colSpan="4" 
+                    <td
+                      colSpan="4"
                       className="text-center align-middle py-8 text-gray-500 text-base font-medium"
                     >
                       <div className="flex flex-col items-center justify-center">
-                        <svg 
-                          className="w-12 h-12 text-gray-300 mb-3" 
-                          fill="none" 
-                          stroke="currentColor" 
+                        <svg
+                          className="w-12 h-12 text-gray-300 mb-3"
+                          fill="none"
+                          stroke="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round" 
-                            strokeWidth="2" 
-                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
                         {t("noCustomersFound")}

@@ -20,7 +20,11 @@ import {
   removeItem,
 } from "../store/invoiceSlice";
 import { setSelectedCustomerId, fetchCustomers } from "../store/customersSlice";
-import { updateCompany, fetchCompanyByUserId } from "../store/companySlice";
+import {
+  updateCompany,
+  fetchCompanyByUserId,
+  clearCachedLogo,
+} from "../store/companySlice";
 import { useTranslation } from "react-i18next";
 import InvoiceFrom from "../components/InvoiceFrom";
 import InvoiceTo from "../components/InvoiceTo";
@@ -112,6 +116,9 @@ function Home() {
       setIsLoading(true);
       try {
         if (userId) {
+          // Clear any cached localhost URLs first
+          dispatch(clearCachedLogo());
+
           // Fetch company data
           await dispatch(fetchCompanyByUserId()).unwrap();
 

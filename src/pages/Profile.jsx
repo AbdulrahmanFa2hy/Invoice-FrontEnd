@@ -7,7 +7,7 @@ import {
   updateUserData,
   deleteUser,
 } from "../store/profileSlice";
-import { resetCompany } from "../store/companySlice";
+import { resetCompany, clearCachedLogo } from "../store/companySlice";
 import { useTranslation } from "react-i18next";
 
 const Profile = () => {
@@ -47,6 +47,7 @@ const Profile = () => {
   const handleLogout = () => {
     dispatch(clearUserData());
     dispatch(resetCompany());
+    dispatch(clearCachedLogo());
     navigate("/login");
   };
 

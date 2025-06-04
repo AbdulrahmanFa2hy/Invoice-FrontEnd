@@ -174,7 +174,7 @@ const customersSlice = createSlice({
       })
       .addCase(addCustomer.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.customers.push(action.payload.customer);
+        state.customers.push(action.payload);
         state.error = null;
       })
       .addCase(addCustomer.rejected, (state, action) => {
