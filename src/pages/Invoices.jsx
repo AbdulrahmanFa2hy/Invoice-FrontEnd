@@ -492,11 +492,11 @@ const Invoices = () => {
                   className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 p-4 sm:p-6 relative cursor-pointer"
                 >
                   <div
-                    className={`absolute top-0 right-0 w-1.5 sm:w-2 h-full rounded-tr-xl rounded-br-xl ${
+                    className={`absolute top-0 start-0 w-1.5 sm:w-2 h-full  ${
                       invoice.type === "complete"
                         ? "bg-blue-500"
                         : "bg-green-500"
-                    }`}
+                    } ${i18n.language === "ar" ? "rounded-tr-xl rounded-br-xl" : "rounded-tl-xl rounded-bl-xl"}`}
                   />
 
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
