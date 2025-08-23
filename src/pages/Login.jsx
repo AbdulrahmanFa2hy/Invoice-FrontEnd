@@ -56,9 +56,13 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Trim input values to remove whitespace
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
     try {
       // First authenticate the user
-      await dispatch(signinUser({ email, password, rememberMe })).unwrap();
+      await dispatch(signinUser({ email: trimmedEmail, password: trimmedPassword, rememberMe })).unwrap();
 
       // After successful login, check if company data exists
       try {
