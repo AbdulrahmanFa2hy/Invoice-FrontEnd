@@ -62,7 +62,12 @@ function Login() {
 
     try {
       // First authenticate the user
-      await dispatch(signinUser({ email: trimmedEmail, password: trimmedPassword, rememberMe })).unwrap();
+      const signedIn = await dispatch(signinUser({ email: trimmedEmail, password: trimmedPassword, rememberMe })).unwrap();
+
+      if (signedIn.isUserExist?.role === "customer") {
+        navigate("/profile");
+        return;
+      }
 
       // After successful login, check if company data exists
       try {

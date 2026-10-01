@@ -61,7 +61,7 @@ const Navbar = () => {
     };
   }, [isMenuOpen]);
 
-  if (!userData) {
+  if (!userData?.isAuthenticated) {
     return null;
   }
 
@@ -348,7 +348,7 @@ const Navbar = () => {
           </NavLink>
 
           {/* Desktop Navigation */}
-          <div className="flex items-center gap-4">
+          {userData.role !== "customer" && <div className="flex items-center gap-4">
             <NavLink
               to="/"
               className={({ isActive }) =>
@@ -409,7 +409,7 @@ const Navbar = () => {
             >
               {t("invoiceType")}
             </NavLink>
-          </div>
+          </div>}
         </div>
 
         {/* Mobile Menu Button */}
@@ -434,13 +434,13 @@ const Navbar = () => {
           >
             {i18n.language === "ar" ? "EN" : "AR"}
           </button>
-          <button
+          {userData.role !== "customer" && <button
             onClick={handleCreateInvoice}
             className="bg-white text-blue-600 p-2 rounded-full hover:bg-blue-50 hover:rotate-90 hover:scale-105 transition-all duration-300 hover:shadow-lg"
             title={t("createNewInvoice")}
           >
             <FiPlus />
-          </button>
+          </button>}
         </div>
       </div>
 
@@ -476,6 +476,7 @@ const Navbar = () => {
 
           {/* Menu Content with adjusted padding */}
           <div className="p-4 pt-16 flex-1">
+            {userData.role !== "customer" && <>
             <NavLink
               to="/"
               className={({ isActive }) =>
@@ -542,6 +543,8 @@ const Navbar = () => {
             >
               {t("invoiceType")}
             </NavLink>
+
+            </>}
 
             {/* Language Toggle Button */}
             <button

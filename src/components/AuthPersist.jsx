@@ -1,31 +1,37 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useLocation, useNavigate, Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, Navigate, Outlet } from "react-router-dom";
 import { checkAuth } from "../store/profileSlice";
 
 function AuthPersist() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const navigate = useNavigate();
+  const userData = useSelector((state) => state.profile.userData);
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
+    let active = true;
     const verifyAuth = async () => {
       try {
         await dispatch(checkAuth()).unwrap();
-      } catch (error) {
-        // If authentication fails, redirect to login but save the current location
-        // Don't redirect if already on login or signup page
-        if (!["/login", "/signup"].includes(location.pathname)) {
-          navigate("/login", {
-            state: { from: location.pathname },
-            replace: true,
-          });
-        }
+      } catch {
+        // checkAuth clears the authenticated state when verification fails.
+      } finally {
+        if (active) setChecking(false);
       }
     };
 
     verifyAuth();
-  }, [dispatch, location.pathname, navigate]);
+    return () => { active = false; };
+  }, [dispatch]);
+
+  if (checking) return null;
+  if (!userData.isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+  if (userData.role === "customer" && location.pathname !== "/profile") {
+    return <Navigate to="/profile" replace />;
+  }
 
   return <Outlet />;
 }
