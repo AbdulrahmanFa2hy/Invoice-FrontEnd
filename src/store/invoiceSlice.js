@@ -55,7 +55,7 @@ export const checkInvoiceExists = createAsyncThunk(
       }
 
       const response = await axios.get(
-        `${API_BASE_URL}/invoices/check/${invoiceNumber}`,
+        `${API_BASE_URL}/invoices/check/${encodeURIComponent(invoiceNumber)}`,
         {
           headers: {
             token: token,
@@ -90,7 +90,7 @@ export const checkInvoiceExistsOnServer = createAsyncThunk(
       }
 
       const response = await axios.get(
-        `${API_BASE_URL}/invoices/check/${invoiceNumber}`,
+        `${API_BASE_URL}/invoices/check/${encodeURIComponent(invoiceNumber)}`,
         {
           headers: {
             token: token,

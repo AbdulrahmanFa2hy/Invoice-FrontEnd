@@ -24,11 +24,12 @@ const getLogoUrl = (logoPath) => {
     ) {
       // Extract just the filename and rebuild with proper URL
       const fileName = logoPath.split("/").pop();
-      return `${UPLOADS_BASE_URL}/${fileName}`;
+      return `${UPLOADS_BASE_URL}/company/${fileName}`;
     }
     return logoPath;
   }
-  return `${UPLOADS_BASE_URL}/${logoPath}`;
+  const relativePath = logoPath.replace(/^\/+/, "").replace(/^uploads\//, "");
+  return `${UPLOADS_BASE_URL}/${relativePath.startsWith("company/") ? relativePath : `company/${relativePath}`}`;
 };
 
 // Helper function to format company data for API

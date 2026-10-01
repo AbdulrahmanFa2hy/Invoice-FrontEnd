@@ -110,10 +110,6 @@ function Login() {
           {/* <p className="mt-2 text-center text-sm text-gray-600">
             {t("signInToAccount")}
           </p> */}
-          <div className="flex-col justify-start items-start text-center mt-2 text-sm text-gray-400">
-            <p>admin@gmail.com</p>
-            <p>password: 123456</p>
-          </div>
         </div>
         {displayError && (
           <div
