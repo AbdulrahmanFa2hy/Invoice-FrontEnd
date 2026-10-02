@@ -155,6 +155,11 @@ i18n
           authenticationRequired: "يجب تسجيل الدخول أولاً",
           // Login page translations
           welcomeBack: "مرحباً بعودتك",
+          demoAccountsTitle: "جرّب النظام بحساب تجريبي",
+          demoAccountsDescription: "اختر دورًا للدخول مباشرة. هذه الحسابات مشتركة للتجربة.",
+          tryDemoAccount: "دخول",
+          tryDemoRole: "الدخول بحساب {{role}} التجريبي",
+          demoRoles: { admin: "المسؤول", user: "المستخدم", customer: "العميل" },
           signInToAccount: "تسجيل الدخول إلى حسابك",
           emailAddress: "البريد الإلكتروني",
           password: "كلمة المرور",
@@ -432,6 +437,11 @@ i18n
           authenticationRequired: "Authentication required",
           // Login page translations
           welcomeBack: "Welcome back",
+          demoAccountsTitle: "Explore with a demo account",
+          demoAccountsDescription: "Choose a role to sign in instantly. These accounts are shared for testing.",
+          tryDemoAccount: "Sign in",
+          tryDemoRole: "Sign in as demo {{role}}",
+          demoRoles: { admin: "Admin", user: "User", customer: "Customer" },
           signInToAccount: "Sign in to your account",
           emailAddress: "Email Address",
           password: "Password",
